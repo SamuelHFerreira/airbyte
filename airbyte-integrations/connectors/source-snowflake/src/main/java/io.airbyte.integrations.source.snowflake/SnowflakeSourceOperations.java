@@ -88,6 +88,7 @@ public class SnowflakeSourceOperations extends JdbcSourceOperations {
 
   @Override
   public JsonSchemaType getAirbyteType(final JDBCType jdbcType) {
+    LOGGER.warn(String.format("Received jdbcType: %s ", jdbcType));
     return switch (jdbcType) {
       case BIT, BOOLEAN -> JsonSchemaType.BOOLEAN;
       case REAL, FLOAT, DOUBLE, NUMERIC, DECIMAL -> JsonSchemaType.NUMBER;

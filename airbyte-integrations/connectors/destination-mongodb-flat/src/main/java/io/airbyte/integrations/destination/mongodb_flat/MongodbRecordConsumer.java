@@ -2,7 +2,7 @@
  * Copyright (c) 2023 Airbyte, Inc., all rights reserved.
  */
 
-package io.airbyte.integrations.destination.mongodb;
+package io.airbyte.integrations.destination.mongodb_flat;
 
 import static com.mongodb.client.model.Projections.excludeId;
 
@@ -118,12 +118,13 @@ public class MongodbRecordConsumer extends FailureTrackingAirbyteMessageConsumer
       final var newDocumentDataHashCode = UUID.nameUUIDFromBytes(DigestUtils.sha256Hex(Jsons.toBytes(recordMessage.getData())).getBytes(
           Charset.defaultCharset())).toString();
       final var newDocument = new Document();
-      newDocument.put(AIRBYTE_DATA, Document.parse(recordMessage.getData().asText()));
+      newDocument.put(AIRBYTE_DATA, new Document(result));
       newDocument.put(AIRBYTE_DATA_HASH, newDocumentDataHashCode);
       newDocument.put(AIRBYTE_EMITTED_AT, LocalDateTime.now().toString());
 
-      for (final var key : result.keySet()) {
-        newDocument.put(key, result.get(key));
+      for (Iterator<String> it = recordMessage.getData().fieldNames(); it.hasNext(); ) {
+        var key = it.next();
+        newDocument.put(key, recordMessage.getData().get(key));
       }
 
       final var collection = writeConfig.getCollection();
