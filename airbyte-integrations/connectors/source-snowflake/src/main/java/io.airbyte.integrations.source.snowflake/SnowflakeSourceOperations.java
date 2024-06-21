@@ -119,6 +119,7 @@ public class SnowflakeSourceOperations extends JdbcSourceOperations {
     }
     if ("ARRAY".equalsIgnoreCase(columnTypeName)) {
       putArray(json, columnName, resultSet, colIndex);
+      return;
     }
     super.copyToJsonField(resultSet, colIndex, json);
   }
