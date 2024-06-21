@@ -12,6 +12,7 @@ import static io.airbyte.cdk.db.jdbc.JdbcConstants.INTERNAL_SCHEMA_NAME;
 import static io.airbyte.cdk.db.jdbc.JdbcConstants.INTERNAL_TABLE_NAME;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.airbyte.cdk.db.DataTypeUtils;
 import io.airbyte.cdk.db.jdbc.DateTimeConverter;
@@ -59,6 +60,20 @@ public class SnowflakeSourceOperations extends JdbcSourceOperations {
           field.get(INTERNAL_TABLE_NAME),
           field.get(INTERNAL_COLUMN_TYPE)));
       return JDBCType.VARCHAR;
+    }
+  }
+
+  @Override
+  protected void putArray(final ObjectNode node, final String columnName, final ResultSet resultSet, final int index) throws SQLException {
+    final String jsonArrayStr = resultSet.getString(index);
+    try {
+      ObjectMapper mapper = new ObjectMapper();
+      JsonNode jsonArrayNode = mapper.readTree(jsonArrayStr);
+      node.set(columnName, jsonArrayNode);
+      LOGGER.info(String.format("jsonArrayNode: %s ", jsonArrayNode));
+    } catch (Exception e) {
+      LOGGER.info(String.format("error putArray: %s ", e.getMessage()));
+      throw new RuntimeException(e);
     }
   }
 
