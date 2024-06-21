@@ -118,7 +118,6 @@ public class MongodbRecordConsumer extends FailureTrackingAirbyteMessageConsumer
       final var newDocumentDataHashCode = UUID.nameUUIDFromBytes(DigestUtils.sha256Hex(Jsons.toBytes(recordMessage.getData())).getBytes(
           Charset.defaultCharset())).toString();
       final var newDocument = new Document();
-      newDocument.put(AIRBYTE_DATA, new Document(result));
       newDocument.put(AIRBYTE_DATA_HASH, newDocumentDataHashCode);
       newDocument.put(AIRBYTE_EMITTED_AT, LocalDateTime.now().toString());
       try {
@@ -126,7 +125,7 @@ public class MongodbRecordConsumer extends FailureTrackingAirbyteMessageConsumer
           newDocument.put(key, result.get(key));
         }
       } catch (Exception e) {
-        LOGGER.info("error on putting different attributes on document {}.", e.getMessage());
+        LOGGER.info("error on putting different attributes on document {}.", e);
       }
 
       final var collection = writeConfig.getCollection();

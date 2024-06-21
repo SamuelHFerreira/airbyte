@@ -111,7 +111,7 @@ public class SnowflakeSourceOperations extends JdbcSourceOperations {
   public void copyToJsonField(final ResultSet resultSet, final int colIndex, final ObjectNode json) throws SQLException {
     final String columnName = resultSet.getMetaData().getColumnName(colIndex);
     final String columnTypeName = resultSet.getMetaData().getColumnTypeName(colIndex).toLowerCase();
-    LOGGER.info(String.format("Received copyToJsonField columnName: %s and typeName %s and colTypeIndex", columnName, columnTypeName, resultSet.getMetaData().getColumnType(colIndex)));
+    LOGGER.info(String.format("Received copyToJsonField columnName: %s and typeName %s and colTypeIndex %s", columnName, columnTypeName, resultSet.getMetaData().getColumnType(colIndex)));
     // TIMESTAMPLTZ data type detected as JDBCType.TIMESTAMP which is not correct
     if ("TIMESTAMPLTZ".equalsIgnoreCase(columnTypeName)) {
       putTimestampWithTimezone(json, columnName, resultSet, colIndex);
