@@ -64,20 +64,6 @@ public class SnowflakeSourceOperations extends JdbcSourceOperations {
   }
 
   @Override
-  protected void putArray(final ObjectNode node, final String columnName, final ResultSet resultSet, final int index) throws SQLException {
-    final String jsonArrayStr = resultSet.getString(index);
-    try {
-      ObjectMapper mapper = new ObjectMapper();
-      JsonNode jsonArrayNode = mapper.readTree(jsonArrayStr);
-      node.set(columnName, jsonArrayNode);
-      LOGGER.info(String.format("jsonArrayNode: %s ", jsonArrayNode));
-    } catch (Exception e) {
-      LOGGER.info(String.format("error putArray: %s ", e.getMessage()));
-      throw new RuntimeException(e);
-    }
-  }
-
-  @Override
   protected void putBigInt(final ObjectNode node, final String columnName, final ResultSet resultSet, final int index) {
     try {
       final var value = resultSet.getBigDecimal(index);
@@ -174,6 +160,18 @@ public class SnowflakeSourceOperations extends JdbcSourceOperations {
                          final int index)
       throws SQLException {
     putJavaSQLTime(node, columnName, resultSet, index);
+  }
+
+  @Override
+  protected void putArray(final ObjectNode node, final String columnName, final ResultSet resultSet, final int index) throws SQLException {
+    final String jsonArrayStr = resultSet.getString(index);
+    try {
+      ObjectMapper mapper = new ObjectMapper();
+      JsonNode jsonArrayNode = mapper.readTree(jsonArrayStr);
+      node.set(columnName, jsonArrayNode);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
 }
