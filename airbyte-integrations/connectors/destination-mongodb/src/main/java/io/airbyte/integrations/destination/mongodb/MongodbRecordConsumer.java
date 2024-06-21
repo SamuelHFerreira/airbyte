@@ -124,8 +124,8 @@ public class MongodbRecordConsumer extends FailureTrackingAirbyteMessageConsumer
         for (final var key : result.keySet()) {
           newDocument.put(key, result.get(key));
         }
-      } catch (Exception e) {
-        LOGGER.info("error on putting different attributes on document {}.", e);
+      } catch (final Exception e) {
+        LOGGER.error("error on putting different attributes on document {}.", e);
       }
 
       final var collection = writeConfig.getCollection();
