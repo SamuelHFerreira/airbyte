@@ -122,7 +122,7 @@ public class MongodbRecordConsumer extends FailureTrackingAirbyteMessageConsumer
       newDocument.put(AIRBYTE_EMITTED_AT, LocalDateTime.now().toString());
       try {
         for (final var key : result.keySet()) {
-          newDocument.put(key, result.get(key));
+          newDocument.put(key.toLowerCase(), result.get(key));
         }
       } catch (final Exception e) {
         LOGGER.error("error on putting different attributes on document {}.", e);
